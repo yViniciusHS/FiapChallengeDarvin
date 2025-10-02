@@ -1,20 +1,25 @@
-// src/pages/retailer/ProgramsPage.jsx
+// src/pages/retailer/RetailerConectaPage.jsx
 
 import React from 'react';
 import { useData } from '../../contexts/dataHooks';
 import PageHeader from '../../components/common/PageHeader';
 
-export default function ProgramsPage() {
+export default function RetailerConectaPage() { 
   const { sales, campaigns } = useData();
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+  if (!loggedInUser) {
+    return <div>Carregando...</div>;
+  }
+
+  const retailerSales = sales.filter(s => s.retailerId === loggedInUser.id);
 
   return (
     <div>
-      <PageHeader title="Programas e Incentivos" subtitle="Participe das campanhas das indústrias e ganhe bônus!" />
+      <PageHeader title="Darvin Conecta" subtitle="Participe das campanhas das indústrias e ganhe bônus!" />
       <div className="row">
         {campaigns.map(campaign => {
-          // --- A LÓGICA PRINCIPAL ACONTECE AQUI ---
-          // Calcula o progresso do varejista para esta campanha
-          const progress = sales.reduce((total, sale) => {
+          const progress = retailerSales.reduce((total, sale) => {
             const item = sale.items.find(i => i.productId === campaign.productId);
             return total + (item ? item.quantity : 0);
           }, 0);
@@ -24,7 +29,7 @@ export default function ProgramsPage() {
 
           return (
             <div className="col-md-6 mb-4" key={campaign.id}>
-              <div className="card h-100">
+              <div className="card h-100 shadow-sm">
                 <div className="card-body">
                   <h5 className="card-title">{campaign.title}</h5>
                   <p className="card-text text-muted">{campaign.description}</p>
@@ -35,20 +40,20 @@ export default function ProgramsPage() {
                   </div>
                   <div className="progress mb-3" style={{height: '25px'}}>
                     <div 
-                      className={`progress-bar ${isCompleted ? 'bg-success' : ''}`}
+                      className={`progress-bar ${isCompleted ? 'bg-success progress-bar-striped progress-bar-animated' : ''}`}
                       role="progressbar" 
                       style={{ width: `${progressPercentage}%` }} 
                       aria-valuenow={progressPercentage} 
-                      aria-valuemin="0" 
-                      aria-valuemax="100"
                     >
                       {progressPercentage.toFixed(0)}%
                     </div>
                   </div>
-                  {isCompleted && <p className="text-success fw-bold">Parabéns, você completou este programa!</p>}
+                  {isCompleted && <p className="text-success fw-bold"><i className="bi bi-check-circle-fill me-2"></i>Parabéns, você completou este programa!</p>}
                 </div>
                 <div className="card-footer">
-                  <strong>Recompensa:</strong> R$ {campaign.bonus.toFixed(2)}
+                  <strong>Recompensa:</strong> 
+                  {/* CORREÇÃO AQUI: Usamos parseFloat para garantir que o valor é um número */}
+                  R$ {parseFloat(campaign.bonus || 0).toFixed(2)}
                 </div>
               </div>
             </div>
