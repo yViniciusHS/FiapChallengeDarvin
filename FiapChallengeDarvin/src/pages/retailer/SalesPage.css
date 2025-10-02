@@ -1,0 +1,27 @@
+/* src/pages/retailer/SalesPage.css */
+
+.card-selector {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card-selector:hover {
+  transform: translateY(-5px);
+}
+
+.card-selector .card {
+  transition: border-color 0.2s ease-in-out;
+}
+
+.card-selector.active .card {
+  border-color: var(--bs-primary);
+  border-width: 2px;
+  background-color: #f0f8ff; /* Um azul bem claro */
+}
+
+.card-selector.active .card .card-title,
+.card-selector.active .card i {
+  color: var(--bs-primary);
+}
